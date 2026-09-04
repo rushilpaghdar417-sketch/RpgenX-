@@ -20,7 +20,12 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Prepare Android project
+      - name: Install Android SDK packages
+        run: |
+          yes | sdkmanager --licenses || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Create Android project
         shell: bash
         run: |
           set -e
@@ -30,16 +35,64 @@ jobs:
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/assets
 
-          cp MainActivity.java app/src/main/java/com/rpgenx/metaphotoconverter/MainActivity.java
-          cp AndroidManifest.xml app/src/main/AndroidManifest.xml
-          cp index.html app/src/main/assets/index.html
-          cp rpgenx_icon.png app/src/main/res/drawable/rpgenx_icon.png
-          cp styles.xml app/src/main/res/values/styles.xml
+          cp MainActivity.java \
+            app/src/main/java/com/rpgenx/metaphotoconverter/MainActivity.java
+
+          cp AndroidManifest.xml \
+            app/src/main/AndroidManifest.xml
+
+          cp index.html \
+            app/src/main/assets/index.html
+
+          cp rpgenx_icon.png \
+            app/src/main/res/drawable/rpgenx_icon.png
+
+          cp styles.xml \
+            app/src/main/res/values/styles.xml
+
+          cat > settings.gradle <<'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+
+          rootProject.name = "RpGenx"
+          include(":app")
+          EOF
+
+          cat > build.gradle <<'EOF'
+          buildscript {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+
+              dependencies {
+                  classpath 'com.android.tools.build:gradle:8.7.3'
+              }
+          }
+
+          allprojects {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          EOF
 
           cat > app/build.gradle <<'EOF'
-          plugins {
-              id 'com.android.application'
-          }
+          apply plugin: 'com.android.application'
 
           android {
               namespace 'com.rpgenx.metaphotoconverter'
@@ -61,7 +114,7 @@ jobs:
           gradle-version: '8.7'
 
       - name: Build RpGenx APK
-        run: gradle assembleDebug
+        run: gradle assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

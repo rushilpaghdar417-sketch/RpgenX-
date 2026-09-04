@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#070707">
+<title>RpGenx — Meta Photo Converter</title>
+<style>
+html,body{margin:0!important;padding:0!important;width:100%!important;min-width:0!important;max-width:100%!important;overflow-x:hidden!important;-webkit-text-size-adjust:100%!important}
+html{background:#070707}
+body{background:#070707;color:#f5f5f5;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+*,*:before,*:after{box-sizing:border-box!important;max-width:100%!important}
+.wrap{
+  display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
+  margin:0!important;padding:14px 14px 34px!important;
+}
+.brand{display:flex!important;width:100%!important;max-width:100%!important;align-items:center;justify-content:space-between;gap:8px;margin:0 0 24px!important}
+.logo{font-size:19px!important;font-weight:850;letter-spacing:-.5px;white-space:nowrap}
+.logo span{color:#666;font-weight:500}
+.badge{font-size:8px!important;letter-spacing:1px;color:#858585;border:1px solid #292929;border-radius:999px;padding:6px 8px;white-space:nowrap}
+h1{font-size:34px!important;line-height:1!important;letter-spacing:-1.7px;margin:0 0 11px!important;font-weight:850}
+.sub{font-size:13px!important;line-height:1.5;color:#929292;margin:0 0 20px!important}
+.actions,.grid{display:grid!important;width:100%!important;min-width:0!important;grid-template-columns:1fr!important;gap:9px!important}
+.btn{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;min-height:50px!important;
+  border:1px solid #282828!important;border-radius:14px!important;background:#151515!important;
+  color:#fff!important;padding:13px 10px!important;font-size:13px!important;font-weight:750!important;
+  white-space:normal!important;overflow:hidden!important;
+}
+.btn.primary{background:#fff!important;color:#070707!important;border-color:#fff!important}
+.ico{flex:0 0 auto!important;width:17px!important;height:17px!important;margin-right:7px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+input[type=file]{display:none!important}
+.drop{
+  display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;
+  margin-top:9px!important;padding:19px 12px!important;text-align:center!important;
+  border:1px dashed #353535!important;border-radius:14px!important;background:#0d0d0d!important;
+  overflow:hidden!important;
+}
+.drop strong{display:block;font-size:12px;color:#e7e7e7;margin-bottom:4px}.drop small{display:block;font-size:10px;color:#666}
+.preview,.result{
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  margin-top:13px!important;border:1px solid #222;border-radius:15px;overflow:hidden;background:#0d0d0d;
+}
+.preview img,.result img{
+  display:block!important;width:100%!important;max-width:100%!important;height:auto!important;
+  object-fit:contain;background:#020202;
+}
+.info,.notice{width:100%!important;max-width:100%!important;min-width:0!important}
+.info{padding:11px}.row{display:flex;justify-content:space-between;gap:9px;border-bottom:1px solid #222;padding:8px 0;font-size:11px;min-width:0}.row b{min-width:0;overflow-wrap:anywhere;text-align:right}.muted{color:#777}
+.convert{width:100%!important;margin-top:12px!important;font-size:14px!important}
+.notice{margin-top:12px!important;padding:11px 12px!important;border-radius:13px;background:#0d0d0d;border:1px solid #202020;color:#747474;font-size:10px;line-height:1.55;overflow-wrap:anywhere}
+.notice .ico{vertical-align:-4px}
+.creator{display:flex;width:100%;max-width:100%;align-items:center;justify-content:space-between;gap:8px;margin-top:20px;padding-top:14px;border-top:1px solid #171717}
+.creator-name{font-size:10px;color:#aaa}.creator-name span{color:#666}.creator a{font-size:10px;color:#888;text-decoration:none;white-space:nowrap}
+footer{text-align:center;color:#474747;font-size:9px;line-height:1.6;margin-top:12px}
+.spin{animation:spin .8s linear infinite;display:inline-block}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:360px){
+  .wrap{padding-left:10px!important;padding-right:10px!important}
+  .logo{font-size:18px!important}.badge{display:none!important}h1{font-size:30px!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="brand"><div class="logo">RpGenx <span>/ Photo Tools</span></div><div class="badge">100% LOCAL</div></header>
+  <h1>Meta Photo<br>Converter</h1>
+  <div class="sub">Convert a photo into a high-resolution Meta-style camera file. Everything runs locally in your browser.</div>
+
+  <div class="actions">
+    <button class="btn primary" id="cameraBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h3l1.5-2h7L17 7.5h3A2 2 0 0 1 22 9.5v9A2 2 0 0 1 20 20.5H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="14" r="3.5"/></svg>Take Photo</button>
+    <button class="btn" id="libraryBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.4"/><path d="m4.5 18 5.2-5 3.2 3 2.2-2.1 4.4 4.1"/></svg>Photo Library</button>
+  </div>
+  <input id="camera" type="file" accept="image/*" capture="environment">
+  <input id="library" type="file" accept="image/jpeg,image/jpg,image/png,image/webp">
+
+  <label class="drop" for="library" id="drop">
+    <strong>Tap to select photo</strong>
+    <small>JPG / JPEG / PNG / WEBP supported</small>
+  </label>
+
+  <section class="preview" id="preview">
+    <img id="sourceImg" alt="Selected photo">
+    <div class="info">
+      <div class="row"><span class="muted">Input</span><b id="inputSize">—</b></div>
+      <div class="row"><span class="muted">Output</span><b>3024 × 4032 px</b></div>
+      <div class="row"><span class="muted">Device profile</span><b>Ray-Ban Meta 2</b></div>
+    </div>
+  </section>
+
+  <button class="btn primary convert" id="convertBtn" disabled><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.2 2 5 13h5l-1.2 9L19 10h-5.2L13.2 2Z"/></svg>CONVERT PHOTO</button>
+
+  <section class="result" id="result">
+    <img id="resultImg" alt="Converted photo">
+    <div class="grid">
+      <button class="btn primary" id="shareBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Save & Share</button>
+      <button class="btn" id="saveBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Save JPEG</button>
+    </div>
+    <button class="btn" id="base64Btn" style="width:100%;margin-top:10px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Copy Base64</button>
+    <div class="notice">Tip: on mobile, you can long-press the converted image to save it. The generated JPEG is processed entirely on your device.</div>
+  </section>
+
+  <div class="notice"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>Privacy: no photo is uploaded to a server. RpGenx processes the selected image locally. <b>For the glasses/Spin effect, use “Save & Share” and choose Instagram directly, or upload the exact saved JPEG without editing/re-saving it.</b></div>
+  <div class="creator">
+  <div class="creator-name">Created by <b>Rushil Paghdar</b> <span>• RpGenx</span></div>
+  <a href="https://instagram.com/rushilpaghdar7" target="_blank" rel="noopener">@rushilpaghdar7</a>
+</div>
+<div class="creator"><div class="creator-name">Created by <b>Rushil Paghdar</b> <span>• RpGenx</span></div><a href="https://instagram.com/rushilpaghdar7" target="_blank" rel="noopener">@rushilpaghdar7</a></div><footer>Private • Local processing • Mobile optimized</footer>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let file=null, outputBlob=null, outputUrl=null;
+
+$("cameraBtn").onclick=()=>$("camera").click();
+$("libraryBtn").onclick=()=>$("library").click();
+["camera","library"].forEach(id=>$(id).addEventListener("change",e=>{
+  const f=e.target.files?.[0]; if(f) loadFile(f);
+}));
+
+$("drop").addEventListener("dragover",e=>{e.preventDefault();});
+$("drop").addEventListener("drop",e=>{e.preventDefault();const f=e.dataTransfer.files?.[0];if(f)loadFile(f);});
+
+function loadFile(f){
+  if(!f.type.startsWith("image/")) return alert("Please choose an image file.");
+  file=f;
+  const url=URL.createObjectURL(f);
+  $("sourceImg").src=url;
+  $("inputSize").textContent=(f.name||"image")+" • "+formatBytes(f.size);
+  $("preview").style.display="block";
+  $("result").style.display="none";
+  $("convertBtn").disabled=false;
+}
+
+$("convertBtn").onclick=async()=>{
+  if(!file)return;
+  $("convertBtn").disabled=true;$("convertBtn").innerHTML='<span class="spin">◌</span> Converting…';
+  try{
+    const img=await decode(file);
+    const targetW=3024,targetH=4032;
+    const canvas=document.createElement("canvas");canvas.width=targetW;canvas.height=targetH;
+    const ctx=canvas.getContext("2d",{alpha:false});
+    ctx.fillStyle="#000";ctx.fillRect(0,0,targetW,targetH);
+
+    // Cover-crop to the requested portrait frame without stretching.
+    const scale=Math.max(targetW/img.width,targetH/img.height);
+    const w=img.width*scale,h=img.height*scale;
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";
+    ctx.drawImage(img,(targetW-w)/2,(targetH-h)/2,w,h);
+
+    const canvasBlob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",0.96));
+    // Inject a real JPEG EXIF APP1 block before the image data.
+    // This keeps the output as a normal JPEG while adding the camera identity
+    // used by Instagram/Meta-compatible import flows.
+    outputBlob=await injectMetaExif(canvasBlob);
+    if(outputUrl)URL.revokeObjectURL(outputUrl);
+    outputUrl=URL.createObjectURL(outputBlob);
+    $("resultImg").src=outputUrl;
+    $("result").style.display="block";
+    window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+  }catch(err){alert("Could not convert this image.");console.error(err)}
+  $("convertBtn").disabled=false;$("convertBtn").textContent="CONVERT PHOTO";
+};
+
+function decode(f){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=URL.createObjectURL(f)})}
+function formatBytes(n){if(n<1024)return n+" B";if(n<1048576)return (n/1024).toFixed(1)+" KB";return (n/1048576).toFixed(2)+" MB"}
+
+$("shareBtn").onclick=async()=>{
+  if(!outputBlob)return;
+  const name="RpGenx_Meta_"+new Date().toISOString().replace(/[:.]/g,"-")+".jpg";
+  const f=new File([outputBlob],name,{type:"image/jpeg"});
+  // Web Share is important here: on Android it invokes the native sharesheet,
+  // allowing Instagram to receive the JPEG directly instead of making a
+  // second re-encoded copy first.
+  if(navigator.share){
+    try{
+      if(!navigator.canShare || navigator.canShare({files:[f]})){
+        await navigator.share({title:"RpGenx Meta Photo",text:"",files:[f]});
+        return;
+      }
+    }catch(e){
+      if(e && e.name==="AbortError") return;
+    }
+  }
+  downloadBlob(outputBlob,name);
+};
+
+$("saveBtn").onclick=()=>{
+  if(!outputBlob)return;
+  const name="RpGenx_Meta_"+new Date().toISOString().replace(/[:.]/g,"-")+".jpg";
+  downloadBlob(outputBlob,name);
+};
+
+$("base64Btn").onclick=async()=>{
+  if(!outputBlob)return;
+  const b=await blobToBase64(outputBlob);
+  try{await navigator.clipboard.writeText(b);alert("Base64 copied to clipboard.");}
+  catch(e){prompt("Copy Base64:",b)}
+};
+
+function downloadBlob(blob,name){
+  const u=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),1500);
+}
+
+function blobToBase64(blob){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(blob)
+  })
+}
+
+/* ---------------- JPEG EXIF writer ----------------
+   Creates a minimal standards-compliant EXIF/TIFF block containing:
+   Make: Meta AI
+   Model: Ray-Ban Meta Smart Glasses 2
+   Software: Meta View
+   Artist/XPTitle are intentionally omitted.
+   GPS is omitted for privacy.
+*/
+async function injectMetaExif(blob){
+  const src=new Uint8Array(await blob.arrayBuffer());
+  if(src[0]!==0xFF || src[1]!==0xD8) return blob;
+
+  const make="Meta AI";
+  const model="Ray-Ban Meta Smart Glasses 2";
+  const software="Meta View";
+
+  // EXIF payload layout:
+  // "Exif\0\0" + TIFF header + IFD0 + strings.
+  const enc=new TextEncoder();
+  const makeB=enc.encode(make+"\0");
+  const modelB=enc.encode(model+"\0");
+  const softB=enc.encode(software+"\0");
+
+  const entries=5;
+  const ifdSize=2 + entries*12 + 4;
+  const dataStart=8 + ifdSize;
+  const makeOff=dataStart;
+  const modelOff=makeOff+makeB.length;
+  const softOff=modelOff+modelB.length;
+
+  const exifLen=6 + 8 + ifdSize + makeB.length + modelB.length + softB.length;
+  const app1Len=2 + exifLen;
+  const app1=new Uint8Array(2 + 2 + exifLen);
+  const dv=new DataView(app1.buffer);
+
+  let p=0;
+  dv.setUint8(p++,0xFF);dv.setUint8(p++,0xE1);
+  dv.setUint16(p,app1Len,false);p+=2;
+  app1.set([0x45,0x78,0x69,0x66,0x00,0x00],p);p+=6;
+
+  // TIFF little endian.
+  dv.setUint8(p++,0x49);dv.setUint8(p++,0x49);
+  dv.setUint16(p,0x002A,true);p+=2;
+  dv.setUint32(p,8,true);p+=4;
+
+  dv.setUint16(p,entries,true);p+=2;
+
+  // IFD0 entry helper.
+  const entry=(tag,type,count,value)=>{
+    dv.setUint16(p,tag,true);dv.setUint16(p+2,type,true);
+    dv.setUint32(p+4,count,true);
+    dv.setUint32(p+8,value,true);p+=12;
+  };
+
+  // ASCII strings stored after the IFD.
+  entry(0x010F,2,makeB.length,makeOff);       // Make
+  entry(0x0110,2,modelB.length,modelOff);     // Model
+  entry(0x0131,2,softB.length,softOff);       // Software
+  entry(0x0112,3,1,1);                         // Orientation = normal
+  entry(0xA001,3,1,1);                         // ColorSpace = sRGB
+
+  dv.setUint32(p,0,true);p+=4;                 // next IFD
+  app1.set(makeB,p);p+=makeB.length;
+  app1.set(modelB,p);p+=modelB.length;
+  app1.set(softB,p);
+
+  // Insert APP1 immediately after JPEG SOI.
+  const out=new Uint8Array(src.length+app1.length);
+  out.set(src.subarray(0,2),0);
+  out.set(app1,2);
+  out.set(src.subarray(2),2+app1.length);
+
+  return new Blob([out],{type:"image/jpeg"});
+}
+
+</script>
+</body>
+</html>

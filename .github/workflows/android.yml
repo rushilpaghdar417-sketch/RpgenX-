@@ -8,17 +8,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Prepare Android project
+        shell: bash
+        run: |
+          set -e
+
+          mkdir -p app/src/main/java/com/rpgenx/metaphotoconverter
+          mkdir -p app/src/main/res/drawable
+          mkdir -p app/src/main/res/values
+          mkdir -p app/src/main/assets
+
+          cp MainActivity.java app/src/main/java/com/rpgenx/metaphotoconverter/MainActivity.java
+          cp AndroidManifest.xml app/src/main/AndroidManifest.xml
+          cp index.html app/src/main/assets/index.html
+          cp rpgenx_icon.png app/src/main/res/drawable/rpgenx_icon.png
+          cp styles.xml app/src/main/res/values/styles.xml
+
+          cat > app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+
+          android {
+              namespace 'com.rpgenx.metaphotoconverter'
+              compileSdk 35
+
+              defaultConfig {
+                  applicationId 'com.rpgenx.metaphotoconverter'
+                  minSdk 24
+                  targetSdk 35
+                  versionCode 1
+                  versionName '1.0'
+              }
+          }
+          EOF
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
